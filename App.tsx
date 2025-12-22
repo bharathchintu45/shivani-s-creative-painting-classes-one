@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Instagram, 
@@ -122,6 +121,17 @@ const ScrollProgress = () => {
   );
 };
 
+// --- NEW COMPONENT: Top Fan Banner ---
+const FanBanner = () => (
+  <div className="fixed top-0 left-0 w-full bg-stone-900 text-stone-200 py-2.5 px-4 text-center text-xs md:text-sm font-medium tracking-wide border-b border-white/10 z-[120]">
+    <span className="flex items-center justify-center gap-2 animate-pulse">
+      <Heart className="w-3.5 h-3.5 text-red-500 fill-current" />
+      Developed by a fan inspired by every brushstroke
+      <Heart className="w-3.5 h-3.5 text-red-500 fill-current" />
+    </span>
+  </div>
+);
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const scrollY = useScrollPosition();
@@ -145,7 +155,8 @@ const Navbar = () => {
   return (
     <>
       <nav 
-        className={`fixed top-0 w-full z-[100] transition-all duration-300 ${
+        // MODIFIED: Added top-9 to push it below the FanBanner
+        className={`fixed top-9 w-full z-[100] transition-all duration-300 ${
           isScrolled || isMenuOpen
             ? 'bg-white shadow-md py-3' 
             : 'bg-transparent py-5'
@@ -249,7 +260,8 @@ const Hero = () => {
   };
 
   return (
-    <section className="pt-32 pb-20 px-6 art-bg relative overflow-hidden min-h-[90vh] flex items-center">
+    // MODIFIED: Increased pt-32 to pt-40 to account for Top Banner + Navbar spacing
+    <section className="pt-40 pb-20 px-6 art-bg relative overflow-hidden min-h-[90vh] flex items-center">
       {/* Background Video Overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <video
@@ -910,12 +922,21 @@ const FAQ = () => {
   );
 };
 
+// MODIFIED: Added Fan Signature
 const Footer = () => (
   <footer className="bg-stone-900 py-12 border-t border-white/5">
     <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-stone-500 text-xs">
       <div className="flex flex-col gap-1 items-center md:items-start">
         <p className="text-stone-400 font-serif font-bold text-sm tracking-tight">SHIVANI'S ART</p>
         <p>© {new Date().getFullYear()} Shivani's Creative Painting Classes. All rights reserved.</p>
+        
+        {/* ADDED: Highlighted Fan Signature */}
+        <div className="mt-3 px-3 py-1 bg-white/5 rounded-full border border-white/10 inline-flex items-center gap-2">
+           <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
+           <p className="text-stone-300 italic">
+             Developed by a fan inspired by every brushstroke
+           </p>
+        </div>
       </div>
       <div className="flex gap-8">
         <a href="https://www.instagram.com/cuddlingupmybrush" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-stone-900 rounded-sm">Instagram</a>
@@ -930,6 +951,10 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 selection:bg-stone-900 selection:text-white">
       <ScrollProgress />
+      
+      {/* ADDED: Fan Banner Component */}
+      <FanBanner />
+      
       <Navbar />
       <Hero />
       <About />
