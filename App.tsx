@@ -29,6 +29,9 @@ import {
   ENROLLMENT_STEPS 
 } from './constants';
 
+// IMPORT THE AUTOMATED FORM
+import { EnrollmentForm } from './EnrollmentForm';
+
 const ART_SAMPLES = [
   "https://picsum.photos/seed/art1/1200/1200",
   "https://picsum.photos/seed/art2/1200/1200",
@@ -50,8 +53,7 @@ const useScrollPosition = () => {
 };
 
 /**
- * A wrapper component that reveals its children with a fade-in and slide-up 
- * animation when they enter the viewport.
+ * Reveal Animation Component
  */
 interface RevealProps {
   children: React.ReactNode;
@@ -155,7 +157,7 @@ const Navbar = () => {
   return (
     <>
       <nav 
-        // MODIFIED: Added top-9 to push it below the FanBanner
+        // Pushed down to top-9 to avoid covering the FanBanner
         className={`fixed top-9 w-full z-[100] transition-all duration-300 ${
           isScrolled || isMenuOpen
             ? 'bg-white shadow-md py-3' 
@@ -195,7 +197,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay - Moved outside the nav div for cleaner stacking */}
+      {/* Mobile Menu Overlay */}
       <div 
         className={`fixed inset-0 bg-white z-[90] md:hidden flex flex-col pt-24 transition-all duration-500 ease-in-out ${
           isMenuOpen 
@@ -253,16 +255,14 @@ const Navbar = () => {
 
 const Hero = () => {
   const scrollY = useScrollPosition();
-  // subtle parallax movement for the foreground image
   const parallaxStyle = {
     transform: `translateY(${scrollY * 0.12}px)`,
     transition: 'transform 0.1s linear'
   };
 
   return (
-    // MODIFIED: Increased pt-32 to pt-40 to account for Top Banner + Navbar spacing
+    // Increased top padding to accommodate Banner + Navbar
     <section className="pt-40 pb-20 px-6 art-bg relative overflow-hidden min-h-[90vh] flex items-center">
-      {/* Background Video Overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none select-none">
         <video
           autoPlay
@@ -451,13 +451,11 @@ const ArtistJourney = () => (
                 </p>
               </div>
             </div>
-            {/* Decorative back-frame */}
             <div className="absolute -bottom-8 -left-8 w-full h-full border-2 border-stone-200 rounded-[3rem] -z-10 translate-x-4 translate-y-4" />
           </div>
         </div>
       </div>
     </Reveal>
-    {/* Background accents */}
     <div className="absolute top-1/2 left-0 -translate-y-1/2 w-64 h-64 bg-stone-50 rounded-full blur-3xl -z-10 opacity-60" />
     <div className="absolute bottom-0 right-0 w-96 h-96 bg-stone-100/50 rounded-full blur-3xl -z-10" />
   </section>
@@ -532,7 +530,6 @@ const Curriculum = () => {
 
   const imageClasses = "rounded-2xl w-full h-full object-cover transition-all duration-500 cursor-pointer hover:scale-[1.03] hover:shadow-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-stone-400 focus-visible:ring-offset-4";
   
-  // Parallax shifts based on overall scroll - softens or disables on mobile
   const getParallaxStyle = (speed: number) => {
     if (isMobile) return {};
     return {
@@ -579,7 +576,6 @@ const Curriculum = () => {
                 </div>
               </div>
               
-              {/* Image Gallery Grid */}
               <div className="grid grid-cols-2 gap-3 md:gap-4 mt-8 md:mt-0 min-h-[300px] md:min-h-0">
                 <div className="aspect-[4/5] overflow-hidden rounded-2xl" onClick={() => setSelectedIdx(0)}>
                   <img tabIndex={0} src={ART_SAMPLES[0]} className={imageClasses} alt="Art Sample 1" style={getParallaxStyle(0.04)} />
@@ -713,16 +709,8 @@ const Pricing = () => {
   );
 };
 
+// MODIFIED: Updated Registration to use Automated Form
 const Registration = () => {
-  const [copied, setCopied] = useState(false);
-  const upiId = "cuddlingupmybrush@okaxis";
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(upiId);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <section id="enroll" className="py-24 bg-white scroll-mt-16">
       <div className="max-w-6xl mx-auto px-6">
@@ -754,51 +742,8 @@ const Registration = () => {
 
           <div className="md:col-span-2">
             <Reveal delay={300}>
-              <div className="bg-stone-900 text-white rounded-[2rem] p-8 space-y-8 shadow-2xl relative overflow-hidden">
-                <div className="relative z-10 space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-2xl font-serif">Enrollment Credentials</h3>
-                    <div className="px-3 py-1 bg-green-500/20 text-green-400 text-[10px] font-bold rounded-full border border-green-500/30 uppercase tracking-widest">Verified</div>
-                  </div>
-                  
-                  <p className="text-stone-400 text-sm leading-relaxed">
-                    Use the following UPI details for payment confirmation. Please send a screenshot of the transaction on WhatsApp after completion.
-                  </p>
-
-                  <div className="space-y-4">
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-stone-500 font-bold">UPI ID</label>
-                      <div className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10 group">
-                        <code className="text-stone-200 font-mono text-sm">{upiId}</code>
-                        <button 
-                          onClick={copyToClipboard}
-                          className="p-2 hover:bg-white/10 rounded-lg transition-colors text-stone-400 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
-                          aria-label="Copy UPI ID"
-                        >
-                          {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="text-[10px] uppercase tracking-widest text-stone-500 font-bold">Payee Name</label>
-                      <div className="p-4 bg-white/5 rounded-xl border border-white/10">
-                        <p className="text-stone-200 font-medium">SHIVANI ART CLASSES</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-4 border-t border-white/10">
-                    <div className="flex items-start gap-3">
-                      <CheckCircle2 className="w-5 h-5 text-stone-500 mt-1" />
-                      <p className="text-xs text-stone-500 italic">
-                        "I believe every brushstroke is a conversation with oneself. Let's start ours today."
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-white/5 rounded-full blur-3xl" />
-              </div>
+               {/* REPLACED STATIC CONTENT WITH AUTOMATED FORM */}
+               <EnrollmentForm />
             </Reveal>
           </div>
         </div>
@@ -922,7 +867,7 @@ const FAQ = () => {
   );
 };
 
-// MODIFIED: Added Fan Signature
+// MODIFIED: Added Highlighted Fan Signature
 const Footer = () => (
   <footer className="bg-stone-900 py-12 border-t border-white/5">
     <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-stone-500 text-xs">
@@ -930,7 +875,7 @@ const Footer = () => (
         <p className="text-stone-400 font-serif font-bold text-sm tracking-tight">SHIVANI'S ART</p>
         <p>© {new Date().getFullYear()} Shivani's Creative Painting Classes. All rights reserved.</p>
         
-        {/* ADDED: Highlighted Fan Signature */}
+        {/* Highlighted Fan Signature */}
         <div className="mt-3 px-3 py-1 bg-white/5 rounded-full border border-white/10 inline-flex items-center gap-2">
            <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
            <p className="text-stone-300 italic">
@@ -952,7 +897,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-stone-50 text-stone-900 selection:bg-stone-900 selection:text-white">
       <ScrollProgress />
       
-      {/* ADDED: Fan Banner Component */}
+      {/* 1. Added Fan Banner Component */}
       <FanBanner />
       
       <Navbar />
